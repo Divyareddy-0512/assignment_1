@@ -1,0 +1,103 @@
+PRBS_GENERATOR_8BIT_SPECIFICATION.
+
+
+1. Overview
+The PRBS Generator produces an 8-bit pseudo-random sequence output based on a selected PRBS mode. The module supports multiple sequence types and allows runtime loading of a user-defined seed value.
+
+2. Interface Description
+
+Clock and Reset:
+- clk      : System clock.
+- rst_n    : Active-low asynchronous reset.
+
+Control Signals:
+- enable   : Enables PRBS sequence generation.
+- load     : Loads a new seed value into the internal state register.
+
+Configuration:
+- prbs_type[2:0] : Selects the PRBS polynomial.
+
+Data Signals:
+- seed[31:0]     : Initial seed value.
+- prbs_out[7:0]  : Current PRBS output.
+
+3. Functional Requirements
+
+3.1 Reset Behavior
+- When rst_n is asserted low, the generator shall clear its internal state.
+- The output value after reset is implementation-dependent until the first valid seed load operation.
+
+3.2 Seed Loading
+- When load is asserted, the seed value shall be loaded.
+- If load and enable are asserted simultaneously, generation behavior is implementation dependent.
+- Loading a seed value of all zeros is allowed.
+- The minimum time load must remain asserted is not defined.
+
+3.3 PRBS Generation
+- PRBS generation occurs when enable is asserted.
+- The generator shall support four PRBS modes:
+
+  Mode 0:
+  - Implements a short-length PRBS sequence.
+  - Feedback taps are derived from lower-order state bits.
+  - Multiple feedback terms may be generated in a single cycle.
+
+  Mode 1:
+  - Implements a medium-length PRBS sequence.
+  - Feedback is calculated using two overlapping state regions.
+
+  Mode 2:
+  - Implements an extended PRBS sequence.
+  - Feedback is generated from higher-order tap locations.
+
+  Mode 3:
+  - Implements a long-length PRBS sequence.
+  - Feedback is generated from upper-state tap combinations.
+
+- Exact tap locations are implementation-specific.
+
+3.4 Output Behavior
+- The output shall reflect the current PRBS state.
+- Output update timing relative to the internal state update is implementation-dependent.
+- The output may represent either the newest generated bits or the previous cycle's state.
+
+4. Unsupported Modes
+- Values of prbs_type greater than 3 are reserved.
+- Behavior for reserved values is undefined.
+- The implementation may either hold state, generate data, or reset internal logic.
+
+5. Priority Rules
+The following priority order is recommended:
+
+Highest Priority:
+1. Reset
+2. Load
+3. Enable
+
+However, alternative priority implementations are permitted if documented.
+
+6. Timing Requirements
+- PRBS state updates occur synchronously with clk.
+- No restrictions are placed on changing prbs_type during active operation.
+- Behavior when prbs_type changes near a clock edge is implementation-dependent.
+
+7. Error Handling
+- No error reporting mechanism is required.
+- Invalid seeds are not checked.
+- Reserved PRBS modes are not checked.
+
+8. Verification Notes
+The following scenarios are considered valid:
+- Loading all-zero seeds.
+- Asserting load and enable together.
+- Switching PRBS modes during sequence generation.
+- Using reserved prbs_type values.
+- Operating without ever loading a seed.
+
+9. Compliance Criteria
+An implementation is considered compliant if:
+- It supports four selectable PRBS operating modes.
+- It accepts a 32-bit seed value.
+- It produces an 8-bit output derived from an internal PRBS state.
+- It updates state synchronously to the system clock.
+
