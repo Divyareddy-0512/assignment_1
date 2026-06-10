@@ -35,7 +35,8 @@ Data Signals:
 - The minimum time load must remain asserted is not defined.
 
 3.3 PRBS Generation
-- PRBS generation occurs when enable is asserted.
+- PRBS generation occurs when enable is asserted high.
+- The state should be updated using feedback computed from XOR operations on specific bit positions.
 - The generator shall support four PRBS modes:
 
   Mode 0:
@@ -67,14 +68,12 @@ Data Signals:
 - The implementation may either hold state, generate data, or reset internal logic.
 
 5. Priority Rules
-The following priority order is recommended:
+The following priority order shall be implemented:
 
 Highest Priority:
 1. Reset
 2. Load
 3. Enable
-
-However, alternative priority implementations are permitted if documented.
 
 6. Timing Requirements
 - PRBS state updates occur synchronously with clk.
