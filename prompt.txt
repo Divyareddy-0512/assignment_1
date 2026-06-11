@@ -24,19 +24,17 @@ Data Signals:
 3. Functional Requirements
 
 3.1 Reset Behavior
-- When rst_n is asserted low, the generator shall clear its internal state to zero.
-- The output shall be 0x00 immediately after reset.
+- When rst_n is asserted low, the generator shall clear its internal state.
+- The output value after reset is implementation-dependent until the first valid seed load operation.
 
 3.2 Seed Loading
-- When load is asserted, the seed value shall be loaded into the internal state register.
-- Note: The internal state register should be wide enough to accommodate the full seed value to enable longer PRBS sequences.
+- When load is asserted, the seed value shall be loaded.
 - If load and enable are asserted simultaneously, generation behavior is implementation dependent.
 - Loading a seed value of all zeros is allowed.
 - The minimum time load must remain asserted is not defined.
 
 3.3 PRBS Generation
-- PRBS generation occurs when enable is asserted high.
-- The state should be updated using feedback computed from XOR operations on specific bit positions.
+- PRBS generation occurs when enable is asserted.
 - The generator shall support four PRBS modes:
 
   Mode 0:
@@ -59,8 +57,9 @@ Data Signals:
 - Exact tap locations are implementation-specific.
 
 3.4 Output Behavior
-- The output shall reflect the lower 8 bits of the current internal state.
-- Output updates synchronously with the state register on each clock cycle.
+- The output shall reflect the current PRBS state.
+- Output update timing relative to the internal state update is implementation-dependent.
+- The output may represent either the newest generated bits or the previous cycle's state.
 
 4. Unsupported Modes
 - Values of prbs_type greater than 3 are reserved.
@@ -68,12 +67,14 @@ Data Signals:
 - The implementation may either hold state, generate data, or reset internal logic.
 
 5. Priority Rules
-The following priority order shall be implemented:
+The following priority order is recommended:
 
 Highest Priority:
 1. Reset
 2. Load
 3. Enable
+
+However, alternative priority implementations are permitted if documented.
 
 6. Timing Requirements
 - PRBS state updates occur synchronously with clk.
