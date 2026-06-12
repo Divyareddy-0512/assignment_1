@@ -28,10 +28,9 @@ Data Signals:
 - The output value after reset is implementation-dependent until the first valid seed load operation.
 
 3.2 Seed Loading
-- When load is asserted, the seed value shall be loaded.
+- When posedge of load is detected, the seed value shall be loaded.
 - If load and enable are asserted simultaneously, generation behavior is implementation dependent.
-- Loading a seed value of all zeros is allowed.
-- The minimum time load must remain asserted is not defined.
+
 
 3.3 PRBS Generation
 - PRBS generation occurs when enable is asserted.
@@ -40,7 +39,7 @@ Data Signals:
   Mode 0:
   - Implements a short-length PRBS sequence.
   - Feedback taps are derived from lower-order state bits.
-  - Multiple feedback terms may be generated in a single cycle.
+ 
 
   Mode 1:
   - Implements a medium-length PRBS sequence.
@@ -74,7 +73,6 @@ Highest Priority:
 2. Load
 3. Enable
 
-However, alternative priority implementations are permitted if documented.
 
 6. Timing Requirements
 - PRBS state updates occur synchronously with clk.
@@ -85,18 +83,3 @@ However, alternative priority implementations are permitted if documented.
 - No error reporting mechanism is required.
 - Invalid seeds are not checked.
 - Reserved PRBS modes are not checked.
-
-8. Verification Notes
-The following scenarios are considered valid:
-- Loading all-zero seeds.
-- Asserting load and enable together.
-- Switching PRBS modes during sequence generation.
-- Using reserved prbs_type values.
-- Operating without ever loading a seed.
-
-9. Compliance Criteria
-An implementation is considered compliant if:
-- It supports four selectable PRBS operating modes.
-- It accepts a 32-bit seed value.
-- It produces an 8-bit output derived from an internal PRBS state.
-- It updates state synchronously to the system clock.
